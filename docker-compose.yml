@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  sparkapp:
+    build: 
+      context: ./sparkapp
+      dockerfile: Dockerfile
+    ports:
+      - 4040:4040
+    volumes:
+      - ./sparkapp/spark.py:/spark.py
+      
+  # docker run --rm -it -p 4040:4040 -v $(pwd)/count.py:/count.py gettyimages/spark bin/spark-submit /count.py
+
+  # sparkapp:
+  #   build:
+  #     context: ./sparkapp
+  #     dockerfile: Dockerfile  
+  #   environment:
+  #     MASTER: spark://sparkapp:7077
+  #     SPARK_CONF_DIR: /conf
+  #     SPARK_PUBLIC_DNS: localhost
+  #   ports:
+  #     - "4040:4040"
+  #     - "6066:6066"
+  #     - "7077:7077"
+  #     - "8080:8080"
+  #   volumes:
+  #     - ./conf/master:/conf
+  #     - ./data:/tmp/data
+  
+  twitterapp:
+    build:
+      context: ./twitterapp
+      dockerfile: Dockerfile
+    ports: 
+      - "9009:9009"
+    volumes:
+      - ./twitterapp:/usr/src/app
+    links:
+      - dashboard
+
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./dashboard:/usr/src/app
